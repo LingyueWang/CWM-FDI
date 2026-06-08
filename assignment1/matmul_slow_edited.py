@@ -69,6 +69,22 @@ def parse_args(argv: list[str]) -> tuple[int, int]:
 
     return n, reps
 
+def transpose(m: Matrix) -> Matrix:
+    n = len(m)
+    return [[m[i][j] for i in range(n)] for j in range(n)]
+
+def matmul_fast3(a: Matrix, b: Matrix, c: Matrix, n: int) -> None:
+    bt = transpose(b)
+
+    for i in range(n):
+        row_ai = a[i]
+        row_ci = c[i]
+        for j in range(n):
+            total = 0.0
+            row_btj = bt[j]
+            for k in range(n):
+                total += row_ai[k] * row_btj[k]
+            row_ci[j] = total
 
 def main(argv: list[str]) -> int:
     n, reps = parse_args(argv)
@@ -80,7 +96,7 @@ def main(argv: list[str]) -> int:
     c = zero_matrix(n)
 
     for _ in range(reps):
-        matmul_slow(a, b, c, n)
+        matmul_fast3(a, b, c, n)
 
     print(f"n={n} reps={reps} checksum={checksum(c, n):.6f}")
     return 0
