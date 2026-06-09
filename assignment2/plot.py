@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 
 
 # parameters to modify 
-filename="time_c.txt"
-label='C_1CPU'
-xlabel = 'time diff'
+filename="interval001.txt"
+label='0.01 interval'
+xlabel = 'RTT'
 ylabel = 'CDF'
-title='CDF rdtime C_1_CPU plot'
-fig_name='rdtime_C_1CPU.png'
+title='CDF 0.01 interval plot'
+fig_name='0.01 interval ping.png'
 bins=1000000 #adjust the number of bins to your plot
 
 ## load data from input file
