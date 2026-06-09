@@ -8,6 +8,7 @@ so the computation has an observable result.
 
 import sys
 from typing import List
+from time import perf_counter
 
 Matrix = List[List[float]]
 
@@ -32,7 +33,10 @@ def matmul_slow(a: Matrix, b: Matrix, c: Matrix, n: int) -> None:
         for j in range(n):
             total = 0.0
             for k in range(n):
+                start = perf_counter()
                 total += a[i][k] * b[k][j]
+                end = perf_counter()
+               # print("cell time = ", end - start)
             c[i][j] = total
 
 
@@ -95,8 +99,13 @@ def main(argv: list[str]) -> int:
 
     c = zero_matrix(n)
 
+
     for _ in range(reps):
-        matmul_fast3(a, b, c, n)
+        start1 = perf_counter()
+        matmul_slow(a, b, c, n)
+        start2 = perf_counter()
+        end1 = start2 - start1
+        print("function runtime = ", end1)
 
     print(f"n={n} reps={reps} checksum={checksum(c, n):.6f}")
     return 0
