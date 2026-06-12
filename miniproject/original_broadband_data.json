@@ -1,0 +1,44 @@
+{
+    "regions": [
+        {
+            "name": "Scotland",
+            "Gigabit-capable": "77%",
+            "Full fibre": "62%",
+            "Superfast": "96%",
+            "5G coverage": "91%",
+            "Unable to get decent connection": "0.5%",
+            "4G total not spots": "11%",
+            "Voice and text total not spots": "7%"
+        },
+        {
+            "name": "Northern Ireland",
+            "Gigabit-capable": "94%",
+            "Full fibre": "93%",
+            "Superfast": "98%",
+            "5G coverage": "92%",
+            "Unable to get decent connection": "0.2%",
+            "4G total not spots": "2%",
+            "Voice and text total not spots": "1%"
+        },
+        {
+            "name": "Wales",
+            "Gigabit-capable": "74%",
+            "Full fibre": "68%",
+            "Superfast": "96%",
+            "5G coverage": "86%",
+            "Unable to get decent connection": "0.5%",
+            "4G total not spots": "5%",
+            "Voice and text total not spots": "3%"
+        },
+        {
+            "name": "England",
+            "Gigabit-capable": "84%",
+            "Full fibre": "69%",
+            "Superfast": "98%",
+            "5G coverage": "94%",
+            "Unable to get decent connection": "0.1%",
+            "4G total not spots": "1%",
+            "Voice and text total not spots": "1%"
+        }
+    ]
+}
