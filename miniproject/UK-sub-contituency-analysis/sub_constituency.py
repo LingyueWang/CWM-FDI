@@ -118,24 +118,61 @@ def write_workbook(path: Path, rows: list[list[object]]) -> None:
 
 
 def plot_index_distribution(index_rows: list[list[object]], title: str, output_path: Path) -> None:
-    values = [float(row[2]) for row in index_rows[1:] if row[2] is not None]
-    values.sort(reverse=True)
+    data = []
+    for row in index_rows[1:]:
+        if row[2] is None:
+            continue
+        area_name = str(row[1])
+        value = float(row[2])
+        data.append((area_name, value))
+
+    if not data:
+        raise ValueError("No index values available for plotting.")
+
+    data.sort(key=lambda x: x[1], reverse=True)
+
+    values = [v for _, v in data]
+
+    uk_average = sum(values) / len(values)
+    max_name, max_value = data[0]
+    min_name, min_value = data[-1]
 
     fig, ax = plt.subplots(figsize=(10, 14))
+
     ax.barh(range(len(values)), values)
     ax.invert_yaxis()
 
     ax.set_xlim(0, 1)
-    ax.xaxis.set_major_formatter(PercentFormatter(1.0))
-    ax.set_xlabel("Digital Equity Index")
+    ax.set_xlabel("Digital Equity Index (0–1)")
     ax.set_yticks([])
     ax.set_title(title)
     ax.grid(axis="x", alpha=0.3)
 
+    note_text = (
+        f"UK average: {uk_average:.4f}\n"
+        f"Maximum: {max_name} ({max_value:.4f})\n"
+        f"Minimum: {min_name} ({min_value:.4f})"
+    )
+
+    ax.text(
+        0.98,
+        0.02,
+        note_text,
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=10,
+        bbox=dict(
+            boxstyle="round,pad=0.4",
+            facecolor="white",
+            edgecolor="gray",
+            alpha=0.9,
+        ),
+    )
+
     fig.tight_layout()
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
-
 
 def process_mode(mode_name: str, metrics: list[str], weights_path: Path) -> None:
     weights = load_weights(weights_path, metrics)
