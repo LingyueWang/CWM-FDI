@@ -2,43 +2,51 @@
     "regions": [
         {
             "name": "Scotland",
-            "Gigabit-capable": 0.8191,
-            "Full fibre": 0.6667,
-            "Superfast": 0.9796,
-            "5G coverage": 0.9681,
-            "Unable to get decent connection": 0.996,
-            "4G total not spots": 0.899,
-            "Voice and text total not spots": 0.9394
+            "normalized": {
+                "Gigabit-capable": 0.77,
+                "Full fibre": 0.62,
+                "Superfast": 0.96,
+                "5G coverage": 0.91,
+                "Unable to get decent connection": 0.995,
+                "4G total not spots": 0.89,
+                "Voice and text total not spots": 0.93
+            }
         },
         {
             "name": "Northern Ireland",
-            "Gigabit-capable": 1.0,
-            "Full fibre": 1.0,
-            "Superfast": 1.0,
-            "5G coverage": 0.9787,
-            "Unable to get decent connection": 0.999,
-            "4G total not spots": 0.9899,
-            "Voice and text total not spots": 1.0
+            "normalized": {
+                "Gigabit-capable": 0.94,
+                "Full fibre": 0.93,
+                "Superfast": 0.98,
+                "5G coverage": 0.92,
+                "Unable to get decent connection": 0.998,
+                "4G total not spots": 0.98,
+                "Voice and text total not spots": 0.99
+            }
         },
         {
             "name": "Wales",
-            "Gigabit-capable": 0.7872,
-            "Full fibre": 0.7312,
-            "Superfast": 0.9796,
-            "5G coverage": 0.9149,
-            "Unable to get decent connection": 0.996,
-            "4G total not spots": 0.9596,
-            "Voice and text total not spots": 0.9798
+            "normalized": {
+                "Gigabit-capable": 0.74,
+                "Full fibre": 0.68,
+                "Superfast": 0.96,
+                "5G coverage": 0.86,
+                "Unable to get decent connection": 0.995,
+                "4G total not spots": 0.95,
+                "Voice and text total not spots": 0.97
+            }
         },
         {
             "name": "England",
-            "Gigabit-capable": 0.8936,
-            "Full fibre": 0.7419,
-            "Superfast": 1.0,
-            "5G coverage": 1.0,
-            "Unable to get decent connection": 1.0,
-            "4G total not spots": 1.0,
-            "Voice and text total not spots": 1.0
+            "normalized": {
+                "Gigabit-capable": 0.84,
+                "Full fibre": 0.69,
+                "Superfast": 0.98,
+                "5G coverage": 0.94,
+                "Unable to get decent connection": 0.999,
+                "4G total not spots": 0.99,
+                "Voice and text total not spots": 0.99
+            }
         }
     ]
 }

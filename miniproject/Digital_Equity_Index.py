@@ -1,4 +1,4 @@
-#FDI mini project: Disaster Resilience Index/Digital Quity Index
+#FDI mini project: Digital Equity Index
 #Lingyue Wang
 #06/11/2026
 
@@ -9,30 +9,32 @@ BASE_DIR = Path(__file__).resolve().parent
 
 INPUT_FILE = BASE_DIR / "original_broadband_data.json"
 WEIGHTS_FILE = BASE_DIR / "weights.json"
-OUTPUT_FILE = BASE_DIR / "weighted_normalized_broadband_data.json"
+NORMALIZED_OUTPUT_FILE = BASE_DIR / "normalized_broadband_data.json"
+WEIGHTED_OUTPUT_FILE = BASE_DIR / "weighted_normalized_broadband_data.json"
 
-# Higher = better
+# Benefit indicators: higher values are better, so keep the value as it is
 BENEFIT_METRICS = [
     "Gigabit-capable",
     "Full fibre",
     "Superfast",
-    "5G coverage"
+    "5G coverage",
 ]
 
-# Lower = better
+# Cost indicators: lower values are better, so reverse using 1 - actual
 COST_METRICS = [
     "Unable to get decent connection",
     "4G total not spots",
-    "Voice and text total not spots"
+    "Voice and text total not spots",
 ]
 
 
 def parse_percent(value):
     """
-    Convert:
-        '77%' -> 0.77
+    Convert values like:
+        '77%'  -> 0.77
         '0.5%' -> 0.005
         '0.77' -> 0.77
+        0.77   -> 0.77
     """
     if isinstance(value, (int, float)):
         return float(value)
@@ -40,83 +42,90 @@ def parse_percent(value):
     value = str(value).strip()
 
     if value.endswith("%"):
-        return float(value[:-1]) / 100.0
+        return float(value[:-1].strip()) / 100.0
 
-    return float(value)
+    num = float(value)
+    return num if num <= 1.0 else num / 100.0
 
 
 def load_json(path):
-    with open(path, "r", encoding="utf-8") as f:
+    with path.open("r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def save_json(path, data):
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
 
 
 def main():
     data = load_json(INPUT_FILE)
     weights = load_json(WEIGHTS_FILE)
 
-    regions = data["regions"]
+    regions = data.get("regions", [])
+    if not regions:
+        raise ValueError("No regions found in original_broadband_data.json")
 
-    # Check weights
-    missing_weights = [m for m in BENEFIT_METRICS + COST_METRICS if m not in weights]
+    all_metrics = BENEFIT_METRICS + COST_METRICS
+
+    # Check that every metric has a weight
+    missing_weights = [metric for metric in all_metrics if metric not in weights]
     if missing_weights:
         raise ValueError(f"Missing weights for: {missing_weights}")
 
-    weight_sum = sum(weights[m] for m in BENEFIT_METRICS + COST_METRICS)
+    # Check that weights sum to 1
+    weight_sum = sum(float(weights[m]) for m in all_metrics)
     if abs(weight_sum - 1.0) > 1e-6:
         raise ValueError(f"Weights must sum to 1. Current sum = {weight_sum}")
 
-    # Compute max values for benefit metrics
-    max_values = {}
-    for metric in BENEFIT_METRICS:
-        values = [parse_percent(region[metric]) for region in regions]
-        max_values[metric] = max(values)
-
-    # Compute min values for cost metrics
-    min_values = {}
-    for metric in COST_METRICS:
-        values = [parse_percent(region[metric]) for region in regions]
-        min_values[metric] = min(values)
-
-    output_regions = []
+    normalized_regions = []
+    weighted_regions = []
 
     for region in regions:
         region_name = region["name"]
-        normalized = {}
-        weighted = {}
 
-        # Normalize benefit metrics
+        normalized_values = {}
+        weighted_values = {}
+
+        # Benefit indicators: normalized value = actual value
         for metric in BENEFIT_METRICS:
             actual = parse_percent(region[metric])
-            norm = actual / max_values[metric] if max_values[metric] != 0 else 0.0
-            normalized[metric] = round(norm, 4)
-            weighted[metric] = round(norm * weights[metric], 4)
+            norm = actual
+            normalized_values[metric] = round(norm, 4)
+            weighted_values[metric] = round(norm * float(weights[metric]), 4)
 
-        # Normalize cost metrics
+        # Cost indicators: normalized value = 1 - actual value
         for metric in COST_METRICS:
             actual = parse_percent(region[metric])
-            denom = 1.0 - min_values[metric]
-            norm = (1.0 - actual) / denom if denom != 0 else 0.0
-            normalized[metric] = round(norm, 4)
-            weighted[metric] = round(norm * weights[metric], 4)
+            norm = 1.0 - actual
+            normalized_values[metric] = round(norm, 4)
+            weighted_values[metric] = round(norm * float(weights[metric]), 4)
 
-        index_value = sum(weighted[m] for m in BENEFIT_METRICS + COST_METRICS)
+        index_value = sum(weighted_values[m] for m in all_metrics)
 
-        output_regions.append({
+        normalized_regions.append({
             "name": region_name,
-            "normalized": normalized,
-            "weighted": weighted,
+            "normalized": normalized_values
+        })
+
+        weighted_regions.append({
+            "name": region_name,
+            "normalized": normalized_values,
+            "weighted": weighted_values,
             "index": round(index_value, 4)
         })
 
-    output = {
+    save_json(NORMALIZED_OUTPUT_FILE, {
+        "regions": normalized_regions
+    })
+
+    save_json(WEIGHTED_OUTPUT_FILE, {
         "weights": weights,
-        "regions": output_regions
-    }
+        "regions": weighted_regions
+    })
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(output, f, indent=4)
-
-    print(f"Weighted normalized data written to: {OUTPUT_FILE}")
+    print(f"Normalized data written to: {NORMALIZED_OUTPUT_FILE}")
+    print(f"Weighted data written to: {WEIGHTED_OUTPUT_FILE}")
 
 
 if __name__ == "__main__":

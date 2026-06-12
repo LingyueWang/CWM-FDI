@@ -12,90 +12,90 @@
         {
             "name": "Scotland",
             "normalized": {
-                "Gigabit-capable": 0.8191,
-                "Full fibre": 0.6667,
-                "Superfast": 0.9796,
-                "5G coverage": 0.9681,
-                "Unable to get decent connection": 0.996,
-                "4G total not spots": 0.899,
-                "Voice and text total not spots": 0.9394
+                "Gigabit-capable": 0.77,
+                "Full fibre": 0.62,
+                "Superfast": 0.96,
+                "5G coverage": 0.91,
+                "Unable to get decent connection": 0.995,
+                "4G total not spots": 0.89,
+                "Voice and text total not spots": 0.93
             },
             "weighted": {
-                "Gigabit-capable": 0.0926,
-                "Full fibre": 0.0753,
-                "Superfast": 0.1107,
-                "5G coverage": 0.1462,
-                "Unable to get decent connection": 0.1693,
-                "4G total not spots": 0.1528,
-                "Voice and text total not spots": 0.1597
+                "Gigabit-capable": 0.087,
+                "Full fibre": 0.0701,
+                "Superfast": 0.1085,
+                "5G coverage": 0.1374,
+                "Unable to get decent connection": 0.1692,
+                "4G total not spots": 0.1513,
+                "Voice and text total not spots": 0.1581
             },
-            "index": 0.9066
+            "index": 0.8816
         },
         {
             "name": "Northern Ireland",
             "normalized": {
-                "Gigabit-capable": 1.0,
-                "Full fibre": 1.0,
-                "Superfast": 1.0,
-                "5G coverage": 0.9787,
-                "Unable to get decent connection": 0.999,
-                "4G total not spots": 0.9899,
-                "Voice and text total not spots": 1.0
+                "Gigabit-capable": 0.94,
+                "Full fibre": 0.93,
+                "Superfast": 0.98,
+                "5G coverage": 0.92,
+                "Unable to get decent connection": 0.998,
+                "4G total not spots": 0.98,
+                "Voice and text total not spots": 0.99
             },
             "weighted": {
-                "Gigabit-capable": 0.113,
-                "Full fibre": 0.113,
-                "Superfast": 0.113,
-                "5G coverage": 0.1478,
-                "Unable to get decent connection": 0.1698,
-                "4G total not spots": 0.1683,
-                "Voice and text total not spots": 0.17
+                "Gigabit-capable": 0.1062,
+                "Full fibre": 0.1051,
+                "Superfast": 0.1107,
+                "5G coverage": 0.1389,
+                "Unable to get decent connection": 0.1697,
+                "4G total not spots": 0.1666,
+                "Voice and text total not spots": 0.1683
             },
-            "index": 0.9949
+            "index": 0.9655
         },
         {
             "name": "Wales",
             "normalized": {
-                "Gigabit-capable": 0.7872,
-                "Full fibre": 0.7312,
-                "Superfast": 0.9796,
-                "5G coverage": 0.9149,
-                "Unable to get decent connection": 0.996,
-                "4G total not spots": 0.9596,
-                "Voice and text total not spots": 0.9798
+                "Gigabit-capable": 0.74,
+                "Full fibre": 0.68,
+                "Superfast": 0.96,
+                "5G coverage": 0.86,
+                "Unable to get decent connection": 0.995,
+                "4G total not spots": 0.95,
+                "Voice and text total not spots": 0.97
             },
             "weighted": {
-                "Gigabit-capable": 0.089,
-                "Full fibre": 0.0826,
-                "Superfast": 0.1107,
-                "5G coverage": 0.1381,
-                "Unable to get decent connection": 0.1693,
-                "4G total not spots": 0.1631,
-                "Voice and text total not spots": 0.1666
+                "Gigabit-capable": 0.0836,
+                "Full fibre": 0.0768,
+                "Superfast": 0.1085,
+                "5G coverage": 0.1299,
+                "Unable to get decent connection": 0.1692,
+                "4G total not spots": 0.1615,
+                "Voice and text total not spots": 0.1649
             },
-            "index": 0.9194
+            "index": 0.8944
         },
         {
             "name": "England",
             "normalized": {
-                "Gigabit-capable": 0.8936,
-                "Full fibre": 0.7419,
-                "Superfast": 1.0,
-                "5G coverage": 1.0,
-                "Unable to get decent connection": 1.0,
-                "4G total not spots": 1.0,
-                "Voice and text total not spots": 1.0
+                "Gigabit-capable": 0.84,
+                "Full fibre": 0.69,
+                "Superfast": 0.98,
+                "5G coverage": 0.94,
+                "Unable to get decent connection": 0.999,
+                "4G total not spots": 0.99,
+                "Voice and text total not spots": 0.99
             },
             "weighted": {
-                "Gigabit-capable": 0.101,
-                "Full fibre": 0.0838,
-                "Superfast": 0.113,
-                "5G coverage": 0.151,
-                "Unable to get decent connection": 0.17,
-                "4G total not spots": 0.17,
-                "Voice and text total not spots": 0.17
+                "Gigabit-capable": 0.0949,
+                "Full fibre": 0.078,
+                "Superfast": 0.1107,
+                "5G coverage": 0.1419,
+                "Unable to get decent connection": 0.1698,
+                "4G total not spots": 0.1683,
+                "Voice and text total not spots": 0.1683
             },
-            "index": 0.9588
+            "index": 0.9319
         }
     ]
 }

@@ -12,7 +12,7 @@ This file contains the weights assigned to each indicator. The weights represent
 
 Σ Weight = 1
 
-### Digital_equity_Index.py
+### Digital_Equity_Index.py
 
 This Python script performs the complete index calculation process.
 
@@ -25,13 +25,13 @@ This Python script performs the complete index calculation process.
 
 The script first normalizes all indicators to a common scale between 0 and 1.
 
-For indicators where higher values indicate better performance:
+For indicators where higher values indicate better performance, the normalized value is equal to the actual value, as all indicators are expressed as proportions between 0 and 1.
 
-Normalized Value = Actual Value / Maximum Value
+Normalized Value = Actual Value
 
-For indicators where lower values indicate better performance:
+For indicators where lower values indicate better performance, the normalized value is calculated by reversing the scale:
 
-Normalized Value = (1 − Actual Value) / (1 − Minimum Value)
+Normalized Value = 1 − Actual Value
 
 The normalized values are then multiplied by their corresponding weights:
 
@@ -50,7 +50,7 @@ Since all normalized values lie between 0 and 1 and the weights sum to 1, the re
 
 ### normalized_broadband_data.json
 
-This intermediate output file contains the normalized values for each indicator after the normalization process has been completed, but before weights are applied. All indicator values are transformed onto a common scale between 0 and 1, allowing indicators with different units and ranges to be compared consistently.
+This intermediate output file contains the indicator values after they have been transformed onto a common 0–1 scale. Benefit indicators retain their original values, while cost indicators are reversed using (1 − Actual Value) so that higher normalized values consistently indicate better digital outcomes.
 
 ### weighted_normalized_broadband_data.json
 
