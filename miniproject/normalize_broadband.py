@@ -5,8 +5,11 @@
 import json
 from pathlib import Path
 
-INPUT_FILE = Path("original_broadband_data.json")
-OUTPUT_FILE = Path("normalized_broadband_data.json")
+BASE_DIR = Path(__file__).resolve().parent
+
+INPUT_FILE = BASE_DIR / "original_broadband_data.json"
+WEIGHTS_FILE = BASE_DIR / "weights.json"
+OUTPUT_FILE = BASE_DIR / "weighted_normalized_broadband_data.json"
 
 # Higher = better
 BENEFIT_METRICS = [
@@ -37,66 +40,84 @@ def parse_percent(value):
     value = str(value).strip()
 
     if value.endswith("%"):
-        return float(value[:-1]) / 100
+        return float(value[:-1]) / 100.0
 
     return float(value)
 
 
-with open(INPUT_FILE, "r", encoding="utf-8") as f:
-    data = json.load(f)
+def load_json(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-regions = data["regions"]
 
-# Calculate maxima for benefit metrics
-max_values = {}
+def main():
+    data = load_json(INPUT_FILE)
+    weights = load_json(WEIGHTS_FILE)
 
-for metric in BENEFIT_METRICS:
-    values = [parse_percent(region[metric]) for region in regions]
-    max_values[metric] = max(values)
+    regions = data["regions"]
 
-# Calculate minima for cost metrics
-min_values = {}
+    # Check weights
+    missing_weights = [m for m in BENEFIT_METRICS + COST_METRICS if m not in weights]
+    if missing_weights:
+        raise ValueError(f"Missing weights for: {missing_weights}")
 
-for metric in COST_METRICS:
-    values = [parse_percent(region[metric]) for region in regions]
-    min_values[metric] = min(values)
+    weight_sum = sum(weights[m] for m in BENEFIT_METRICS + COST_METRICS)
+    if abs(weight_sum - 1.0) > 1e-6:
+        raise ValueError(f"Weights must sum to 1. Current sum = {weight_sum}")
 
-normalized_regions = []
+    # Compute max values for benefit metrics
+    max_values = {}
+    for metric in BENEFIT_METRICS:
+        values = [parse_percent(region[metric]) for region in regions]
+        max_values[metric] = max(values)
 
-for region in regions:
+    # Compute min values for cost metrics
+    min_values = {}
+    for metric in COST_METRICS:
+        values = [parse_percent(region[metric]) for region in regions]
+        min_values[metric] = min(values)
 
-    normalized = {
-        "name": region["name"]
+    output_regions = []
+
+    for region in regions:
+        region_name = region["name"]
+        normalized = {}
+        weighted = {}
+
+        # Normalize benefit metrics
+        for metric in BENEFIT_METRICS:
+            actual = parse_percent(region[metric])
+            norm = actual / max_values[metric] if max_values[metric] != 0 else 0.0
+            normalized[metric] = round(norm, 4)
+            weighted[metric] = round(norm * weights[metric], 4)
+
+        # Normalize cost metrics
+        for metric in COST_METRICS:
+            actual = parse_percent(region[metric])
+            denom = 1.0 - min_values[metric]
+            norm = (1.0 - actual) / denom if denom != 0 else 0.0
+            normalized[metric] = round(norm, 4)
+            weighted[metric] = round(norm * weights[metric], 4)
+
+        index_value = sum(weighted[m] for m in BENEFIT_METRICS + COST_METRICS)
+
+        output_regions.append({
+            "name": region_name,
+            "normalized": normalized,
+            "weighted": weighted,
+            "index": round(index_value, 4)
+        })
+
+    output = {
+        "weights": weights,
+        "regions": output_regions
     }
 
-    # Benefit metrics
-    for metric in BENEFIT_METRICS:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(output, f, indent=4)
 
-        actual = parse_percent(region[metric])
+    print(f"Weighted normalized data written to: {OUTPUT_FILE}")
 
-        normalized[metric] = round(
-            actual / max_values[metric],
-            4
-        )
 
-    # Cost metrics
-    for metric in COST_METRICS:
-
-        actual = parse_percent(region[metric])
-
-        normalized[metric] = round(
-            (1 - actual) /
-            (1 - min_values[metric]),
-            4
-        )
-
-    normalized_regions.append(normalized)
-
-output = {
-    "regions": normalized_regions
-}
-
-with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    json.dump(output, f, indent=4)
-
-print(f"Normalized data written to: {OUTPUT_FILE}")
+if __name__ == "__main__":
+    main()
