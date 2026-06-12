@@ -7,6 +7,8 @@ import json
 import re
 from pathlib import Path
 
+import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 from openpyxl import Workbook, load_workbook
 
 
@@ -115,11 +117,32 @@ def write_workbook(path: Path, rows: list[list[object]]) -> None:
     wb.save(path)
 
 
+def plot_index_distribution(index_rows: list[list[object]], title: str, output_path: Path) -> None:
+    values = [float(row[2]) for row in index_rows[1:] if row[2] is not None]
+    values.sort(reverse=True)
+
+    fig, ax = plt.subplots(figsize=(10, 14))
+    ax.barh(range(len(values)), values)
+    ax.invert_yaxis()
+
+    ax.set_xlim(0, 1)
+    ax.xaxis.set_major_formatter(PercentFormatter(1.0))
+    ax.set_xlabel("Digital Equity Index")
+    ax.set_yticks([])
+    ax.set_title(title)
+    ax.grid(axis="x", alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+
 def process_mode(mode_name: str, metrics: list[str], weights_path: Path) -> None:
     weights = load_weights(weights_path, metrics)
 
     weighted_output_file = BASE_DIR / f"weighted_parameters_{mode_name}.xlsx"
     index_output_file = BASE_DIR / f"digital_equity_index_{mode_name}.xlsx"
+    plot_output_file = BASE_DIR / f"digital_equity_index_{mode_name}.png"
 
     wb = load_workbook(INPUT_FILE, data_only=True, read_only=True)
     ws = choose_sheet(wb)
@@ -154,7 +177,7 @@ def process_mode(mode_name: str, metrics: list[str], weights_path: Path) -> None
             if value is None:
                 raise ValueError(f"Missing value for {metric} in row {area_code}")
 
-            norm = float(value)  # already normalized in the input workbook
+            norm = float(value)
             norm = max(0.0, min(1.0, norm))
             weighted = norm * weights[metric]
 
@@ -179,8 +202,16 @@ def process_mode(mode_name: str, metrics: list[str], weights_path: Path) -> None
     write_workbook(weighted_output_file, weighted_rows)
     write_workbook(index_output_file, index_rows)
 
+    if mode_name == "with_speed":
+        plot_title = "Digital Equity Index for UK sub-constituencies with average download speed considered"
+    else:
+        plot_title = "Digital Equity Index for UK sub-constituencies without average download speed considered"
+
+    plot_index_distribution(index_rows, plot_title, plot_output_file)
+
     print(f"Created: {weighted_output_file}")
     print(f"Created: {index_output_file}")
+    print(f"Created: {plot_output_file}")
 
 
 def main() -> None:
